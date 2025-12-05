@@ -6,10 +6,13 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Configuration;
 using MySqlConnector;
+using Neo4j.Driver;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
+using static System.Collections.Specialized.BitVector32;
+
 
 namespace MigrationTestProject
 {
@@ -54,22 +57,6 @@ namespace MigrationTestProject
                 return;
             }
             // -------------------------------
-            // Step 3: Fetch from MySQL
-            // -------------------------------
-            /*Employee[] employees;
-            try
-            {
-                using var context = new MySqlContext(mysqlOptions);
-                employees = await context.Employees.ToArrayAsync();
-                Console.WriteLine($"Fetched {employees.Length} employees from MySQL.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error fetching data from MySQL: " + ex.Message);
-                return;
-            }*/
-
-            // -------------------------------
             // Step 3: Connect to MongoDB
             // -------------------------------
             var mongoConnString = config.GetConnectionString("Mongo");
@@ -86,13 +73,13 @@ namespace MigrationTestProject
 
                 await MigrateCollection(context.Employees, mongoDb, "Employees");
                 await MigrateCollection(context.Bicycles, mongoDb, "Bicycles");
-                await MigrateCollection(context.ListOfShifts, mongoDb, "ListOfShift");
                 await MigrateCollection(context.Substituteds, mongoDb, "Substituteds");
                 await MigrateCollection(context.Routes, mongoDb, "Routes");
-                await MigrateCollection(context.WorkHoursInMonths, mongoDb, "WorkHoursInMonths");
                 await MigrateCollection(context.Users, mongoDb, "Users");
                 await MigrateCollection(context.ShiftPlans, mongoDb, "ShiftPlans");
                 await MigrateCollection(context.AuditLogs, mongoDb, "AuditLogs");
+                await MigrateCollection(context.ListOfShifts, mongoDb, "ListOfShift");
+                await MigrateCollection(context.WorkHoursInMonths, mongoDb, "WorkHoursInMonths");
 
                 Console.WriteLine("All tables migrated to MongoDB successfully!");
             }
@@ -100,6 +87,8 @@ namespace MigrationTestProject
             {
                 Console.WriteLine("Error during migration: " + ex.Message);
             }
+
+);
             /*
             //----------------------------------------------------------------------------------------
 
@@ -332,6 +321,34 @@ namespace MigrationTestProject
             }
             */
             Console.WriteLine("Migration done with SQL IDs preserved ✨");
+        }
+        private static async Task MigrateGraphDatabase<T>(DbSet<T> dbSet, string nodeName) where T : class
+        {
+
+            // -------------------------------
+            // Step 1: Connection
+            // -------------------------------
+
+            var driver = GraphDatabase.Driver(
+                "neo4j+s://<your-instance>.databases.neo4j.io",
+                AuthTokens.Basic("neo4j", "<password>"));
+            // -------------------------------
+            // Step 2: Create nodes
+            // -------------------------------
+            using var session = driver.AsyncSession();
+            await session.RunAsync(
+            "CREATE (p:Person {id: $id, name: $name})",
+            new { /*id = person.Id, name = person.Name */ });
+
+            // -------------------------------
+            // Step 3:  Create relationships
+            // -------------------------------
+            await session.RunAsync(
+            @"MATCH (a:Person {id: $from}), (b:Person {id: $to})
+            CREATE (a)-[:FRIENDS_WITH]->(b)",
+            new { /*from = idA, to = idB */});
+
+
         }
         private static async Task MigrateCollection<T>(DbSet<T> dbSet,IMongoDatabase mongoDb,string collectionName) where T : class
         {
