@@ -88,7 +88,7 @@ namespace MigrationTestProject
                 Console.WriteLine("Error during migration: " + ex.Message);
             }
 
-);
+            
             /*
             //----------------------------------------------------------------------------------------
 
