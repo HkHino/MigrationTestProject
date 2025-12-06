@@ -12,6 +12,6 @@ namespace MigrationTestProject.Models
         public int BicycleNumber { get; set; }
         public bool InOperate { get; set; } = false;
 
-        public ICollection<ListOfShift>? Shifts { get; set; }
+        public ICollection<ListOfShift> Shifts { get; set; } = new List<ListOfShift>();
     }
 }

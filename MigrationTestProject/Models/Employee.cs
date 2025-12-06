@@ -1,4 +1,5 @@
-﻿using MigrationTestProject.Models.MongoDB;
+﻿//using MigrationTestProject.Models.MongoDB;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +19,12 @@ namespace MigrationTestProject.Models
         public int ExperienceLevel { get; set; } = 1;
 
         // Navigation properties
-        public ICollection<Substituted>? Substituteds { get; set; }
-        public ICollection<ListOfShift>? Shifts { get; set; }
-        public ICollection<WorkHoursInMonths>? WorkHoursInMonths { get; set; }
-        public User? User { get; set; }
+        public ICollection<Substituted> Substituteds { get; set; } = new HashSet<Substituted>();
+        public ICollection<ListOfShift> Shifts { get; set; }= new HashSet<ListOfShift>();
+        public ICollection<WorkHoursInMonths> WorkHoursInMonths { get; set; } = new HashSet<WorkHoursInMonths>();
+        public User User { get; set; }
+
+
     }
 }
 

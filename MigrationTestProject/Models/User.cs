@@ -9,11 +9,12 @@ namespace MigrationTestProject.Models
     public class User
     {
         public int UserId { get; set; }
-        public string UserName { get; set; } = null!;
-        public string Password { get; set; } = null!; // hashed
-        public int EmployeeId { get; set; }
+        public string Username { get; set; }
+        public UserRole Role { get; set; }
+        public string Hash { get; set; }
 
-        // Navigation
-        public Employee? Employee { get; set; }
+        // Has one employee connected to it
+        public int EmployeeId { get; set; }
+        public Employee Employee { get; set; } = default!;
     }
 }
