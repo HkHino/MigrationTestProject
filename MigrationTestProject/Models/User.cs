@@ -17,4 +17,10 @@ namespace MigrationTestProject.Models
         public int EmployeeId { get; set; }
         public Employee Employee { get; set; } = default!;
     }
+
+    public enum UserRole
+    {
+        Admin,
+        Employee
+    }
 }

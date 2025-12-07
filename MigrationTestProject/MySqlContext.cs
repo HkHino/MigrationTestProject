@@ -86,6 +86,7 @@ namespace MigrationTestProject
                 .WithMany(r => r.Shifts)
                 .HasForeignKey(s => s.RouteId)
                 .OnDelete(DeleteBehavior.Cascade);
+            
             // ========================
             // Indexes / Unique Constraints
             // ========================
@@ -102,8 +103,11 @@ namespace MigrationTestProject
                 .IsUnique();
 
             modelBuilder.Entity<User>()
-                .HasIndex(u => u.UserName)
+                .HasIndex(u => u.Username)
                 .IsUnique();
+            modelBuilder.Entity<User>()
+                .Property(u => u.Role)
+                .HasConversion<string>(); // enum <-> string ("Admin", "Employee")
 
             modelBuilder.Entity<WorkHoursInMonths>()
                 .HasIndex(w => new { w.EmployeeId, w.PeriodStart, w.PeriodEnd })

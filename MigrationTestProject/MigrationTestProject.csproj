@@ -5,9 +5,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UserSecretsId>5e2caeaf-4599-4be8-8077-cf49ef1f0630</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="dotenv.net" Version="4.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
@@ -24,13 +26,12 @@
 	<None Update="appsettings.json">
 		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	</None>
-    <None Update=".env">
+  <None Update=".env">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+  </None>
   </ItemGroup>
-
   <ItemGroup>
-    <Folder Include="Models\MongoDB\" />
+    <Folder Include="Models\Dto\" />
     <Folder Include="Models\MySQL\" />
   </ItemGroup>
 
