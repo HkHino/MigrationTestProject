@@ -1,18 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using MigrationTestProject;
 using MigrationTestProject.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Driver.Core.Configuration;
 using MySqlConnector;
 using Neo4j.Driver;
-using System;
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Threading.Tasks;
 using AutoMapper;
-using static System.Collections.Specialized.BitVector32;
 using dotenv.net;
 using MigrationTestProject.Mapper;
 using MigrationTestProject.Models.MongoDB;
@@ -30,6 +22,9 @@ namespace MigrationTestProject
             DotEnv.Load();
             var mySqlConnection = Environment.GetEnvironmentVariable("CONNECTIONSTRINGS__MYSQL");
             var mongoConnection = Environment.GetEnvironmentVariable("CONNECTIONSTRINGS__MONGO")!;
+            var neo4jUri = Environment.GetEnvironmentVariable("CONNECTIONSTRINGS__NEO4J")!;
+            var neo4jUser = Environment.GetEnvironmentVariable("NEO4J__USER")!;
+            var neo4jPassword = Environment.GetEnvironmentVariable("NEO4J__PASSWORD")!;
 
             Console.WriteLine("MySQL connection string: " + mySqlConnection);
             Console.WriteLine("Mongo connection string: " + mongoConnection);
@@ -142,6 +137,20 @@ namespace MigrationTestProject
             }
             
             Console.WriteLine("Migration done with SQL IDs preserved ✨");
+
+            // -------------------------------
+            // Step 5: Connect to Neo4j
+            // -------------------------------
+            var driver = GraphDatabase.Driver(
+                neo4jUri,
+                AuthTokens.Basic(neo4jUser, neo4jPassword)
+            );
+            // -------------------------------
+            // Step 6: Neo4j migrate Employee nodes
+            // -------------------------------
+            /*builder.Services.AddSingleton<IDriver>(driver);
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();*/
         }
     }
+
 }

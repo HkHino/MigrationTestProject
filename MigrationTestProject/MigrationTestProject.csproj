@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\Dto\**" />
+    <EmbeddedResource Remove="Models\Dto\**" />
+    <None Remove="Models\Dto\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="dotenv.net" Version="4.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
@@ -31,7 +37,6 @@
   </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\Dto\" />
     <Folder Include="Models\MySQL\" />
   </ItemGroup>
 
