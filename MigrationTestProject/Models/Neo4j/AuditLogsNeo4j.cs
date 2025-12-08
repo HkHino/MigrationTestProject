@@ -2,7 +2,7 @@
 
 namespace MigrationTestProject.Models.Neo4j
 {
-    public class AuditLogNeo4j
+    public class AuditLogsNeo4j
     {
         public int AuditId { get; set; }
         public string TableName { get; set; } = null!;

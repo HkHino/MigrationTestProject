@@ -2,7 +2,7 @@
 
 namespace MigrationTestProject.Models.Neo4j
 {
-    public class WorkHoursInMonthNeo4j
+    public class WorkHoursInMonthsNeo4j
     {
         public int WorkHoursInMonthId { get; set; }
         public int EmployeeId { get; set; }

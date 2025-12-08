@@ -2,7 +2,7 @@
 
 namespace MigrationTestProject.Models.Neo4j
 {
-    class ListOfShiftShiftNeo4j
+    public class ListOfShiftNeo4j
     {
         public int ShiftId { get; set; }
         public DateTime DateOfShift { get; set; }

@@ -12,7 +12,7 @@ using MigrationTestProject.Models.MongoDB;
 namespace MigrationTestProject
 {
     class Program
-    {
+    {   
         private static IMapper _mapper = null!;
         static async Task Main(string[] args)
         {
