@@ -7,6 +7,13 @@ namespace MigrationTestProject.Models.Neo4j
         public string Username { get; set; }
         public UserRole Role { get; set; }
         public string Hash { get; set; }
-        public string EmployeeId { get; set; }
+
+        public int EmployeeId { get; set; }
     }
+    public enum UserRole
+    {
+        Admin,
+        Employee
+    }
+
 }

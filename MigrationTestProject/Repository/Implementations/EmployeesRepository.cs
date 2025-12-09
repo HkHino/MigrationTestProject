@@ -16,7 +16,7 @@ namespace MigrationTestProject.Repository.Implementations
         public async Task CreateEmployeeAsync(EmployeeNeo4j e)
         {
             var query = @"
-            MERGE (e:Employees { employeeId: $EmployeeId })
+            MERGE (e:Employees { id: $EmployeeId })
             SET e.firstName = $FirstName,
                 e.lastName = $LastName,
                 e.address = $Address,

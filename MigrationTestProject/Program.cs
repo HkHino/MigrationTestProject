@@ -1,19 +1,35 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using dotenv.net;
+using Microsoft.EntityFrameworkCore;
+using MigrationTestProject.Mapper;
 using MigrationTestProject.Models;
+using MigrationTestProject.Models.MongoDB;
+using MigrationTestProject.Models.Neo4j;
+using MigrationTestProject.Repositories.Neo4j;
+using MigrationTestProject.Repository;
+using MigrationTestProject.Repository.Implementations;
+using MigrationTestProject.Services;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MySqlConnector;
 using Neo4j.Driver;
-using AutoMapper;
-using dotenv.net;
 using MigrationTestProject.Mapper;
-using MigrationTestProject.Models.MongoDB;
 
 namespace MigrationTestProject
 {
     class Program
     {   
         private static IMapper _mapper = null!;
+        private static IAuditLogRepository auditLogsRepo;
+        private static IEmployeeRepository employeesRepo;
+        private static IBicycleRepository bicyclesRepo;
+        private static IRouteRepository routesRepo;
+        private static IListOfShiftRepository listOfShiftsRepo;
+        private static ISubstitutedsRepository substitutedsRepo;
+        private static IUsersRepository usersRepo;
+        private static IWorkHoursInMonthsRepository workHoursInMonthsRepo;
+        private static IShiftPlanRepository shiftPlansRepo;
+
         static async Task Main(string[] args)
         {
             // ========================
@@ -141,15 +157,50 @@ namespace MigrationTestProject
             // -------------------------------
             // Step 5: Connect to Neo4j
             // -------------------------------
+
+
             var driver = GraphDatabase.Driver(
                 neo4jUri,
                 AuthTokens.Basic(neo4jUser, neo4jPassword)
             );
+            await using var session = driver.AsyncSession();
+            var result = await session.RunAsync("RETURN 1");
+            var record = await result.SingleAsync();
+            Console.WriteLine("Neo4j connection test result: " + record[0].As<int>());
+
+            var employeesRepo = new EmployeesRepository(driver);
+            var bicyclesRepo = new BicyclesRepository(driver);
+            var routesRepo = new RouteRepository(driver);
+            var listOfShiftsRepo = new ListOfShiftRepository(driver);
+            var substitutedsRepo = new SubstitutedsRepository(driver);
+            var usersRepo = new UsersRepository(driver);
+            var workHoursInMonthsRepo = new WorkHoursInMonthsRepository(driver);
+            var shiftPlansRepo = new ShiftPlansRepository(driver);
+            var auditLogsRepo = new AuditLogsRepository(driver);
             // -------------------------------
             // Step 6: Neo4j migrate Employee nodes
             // -------------------------------
-            /*builder.Services.AddSingleton<IDriver>(driver);
-            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();*/
+
+            // After initializing MySQL, Mongo, and Neo4j driver
+            await using var mySqlContext = new MySqlContext(mysqlOptions);
+            var migrationServiceNeo4j = new MigrationServiceNeo4j(
+                mySqlContext,
+                auditLogsRepo,
+                employeesRepo,
+                bicyclesRepo,
+                routesRepo,
+                listOfShiftsRepo,
+                substitutedsRepo,
+                usersRepo,
+                workHoursInMonthsRepo,
+                shiftPlansRepo
+            );
+
+
+            Console.WriteLine("Starting migration to Neo4j...");
+            await migrationServiceNeo4j.MigrateAllAsync();
+            Console.WriteLine("Neo4j migration completed!");
+            
         }
     }
 

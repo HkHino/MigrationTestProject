@@ -10,5 +10,10 @@ namespace MigrationTestProject.Models.Neo4j
         public TimeSpan? EndTime { get; set; }
         public decimal? TotalHours { get; set; }
 
+        public int EmployeeId { get; set; }
+        public int BicycleId { get; set; }
+        public int RouteId { get; set; }
+        public int SubstitutedId { get; set; }
+
     }
 }

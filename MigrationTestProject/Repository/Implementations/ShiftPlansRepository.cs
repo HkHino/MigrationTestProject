@@ -15,7 +15,7 @@ namespace MigrationTestProject.Repository.Implementations
         public async Task CreateShiftPlansAsync(ShiftPlansNeo4j s)
         {
             var query = @"
-                MERGE (s:Bicycles { id: $ShiftPlanId })
+                MERGE (s:ShiftPlans { id: $ShiftPlanId })
                 SET s.name = $Name,
                     s.startDate= $StartDate,
                     s.endDate = $EndDate,

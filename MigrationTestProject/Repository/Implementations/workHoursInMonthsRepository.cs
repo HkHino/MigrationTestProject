@@ -15,17 +15,31 @@ namespace MigrationTestProject.Repository.Implementations
         {
             var query = @"
                 MERGE (w:WorkHoursInMonths { id: $WorkHoursInMonthId })
-                SET w.bicycleNumber = $EmployeeId,
-                    w.inOperate = $PayrollYear,
+                SET w.payrollYear = $PayrollYear,
                     w.payrollMonth = $PayrollMonth,
                     w.periodStart = $PeriodStart,
                     w.periodEnd = $PeriodEnd,
                     w.totalHours = $TotalHours,
                     w.hasSubstituted = $HasSubstituted
+                WITH w
+                
+                // Connect to Employee
+                MATCH (e:Employees { id: $EmployeeId })
+                MERGE (w)-[:BELONGS_TO]->(e)
             ";
 
             await using var session = _driver.AsyncSession();
-            await session.RunAsync(query, w);
+            await session.RunAsync(query, new
+            {
+                WorkHoursInMonthId = w.WorkHoursInMonthId,
+                PayrollYear = w.PayrollYear,
+                PayrollMonth = w.PayrollMonth,
+                PeriodStart = w.PeriodStart,
+                PeriodEnd = w.PeriodEnd,
+                TotalHours = (double)w.TotalHours, // cast to double
+                HasSubstituted = w.HasSubstituted,
+                EmployeeId = w.EmployeeId
+            });
         }
 
     }

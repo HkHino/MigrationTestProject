@@ -17,8 +17,12 @@ namespace MigrationTestProject.Repository.Implementations
         {
             var query = @"
                 MERGE (sub:Substituteds { id: $SubstitutedId })
-                SET sub.employeeId = $EmployeeId,
-                    sub.hasSubstituted = $HasSubstituted
+                SET sub.hasSubstituted = $HasSubstituted
+                WITH sub
+
+                // Connect to Employee
+                MATCH (e:Employees { id: $EmployeeId })
+                MERGE (sub)-[:ASSIGNED_TO_EMPLOYEE]->(e)
             ";
 
             await using var session = _driver.AsyncSession();

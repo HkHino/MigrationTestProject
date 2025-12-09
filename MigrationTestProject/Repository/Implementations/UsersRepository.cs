@@ -15,14 +15,27 @@ namespace MigrationTestProject.Repository.Implementations
         public async Task CreateUsersAsync(UsersNeo4j u)
         {
             var query = @"
-                MERGE (u:Users { id: $UserID })
+                MERGE (u:Users { id: $UserId })
                 SET u.username = $Username,
-                    u.hash = $hash,
-                    u.role = $role,
-                    u.employeeId =$EmployeeId
+                    u.hash = $Hash,
+                    u.role = $Role
+                WITH u
+                
+                // Connect to Employee
+                MATCH (e:Employees { employeeId: $EmployeeId })
+                MERGE (u)-[:ASSIGNED_TO_EMPLOYEE]->(e)
             ";
+            // Convert enum to string
+            var parameters = new
+            {
+                UserId = u.UserId,
+                Username = u.Username,
+                Hash = u.Hash,
+                Role = u.Role.ToString(),  // enum as string
+                EmployeeId = u.EmployeeId
+            };
             await using var session = _driver.AsyncSession();
-            await session.RunAsync(query, u);
+            await session.RunAsync(query, parameters);
         }
     }
     
