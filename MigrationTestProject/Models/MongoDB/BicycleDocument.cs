@@ -9,10 +9,10 @@ public class BicycleDocument
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     [BsonIgnoreIfNull]        // <- important
-    public string? Id { get; set; }
+    public string? MondoId { get; set; }
 
     [BsonElement("bicycleId")]
-    public int BicycleId { get; set; }
+    public int Id { get; set; }
 
     [BsonElement("bicycleNumber")]
     public int BicycleNumber { get; set; }

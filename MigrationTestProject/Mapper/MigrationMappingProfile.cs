@@ -21,8 +21,7 @@ public class MigrationMappingProfile : Profile
         // ---------------------------
         // Bicycle
         // ---------------------------
-        CreateMap<Bicycle, BicycleDocument>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore());
+        CreateMap<Bicycle, BicycleDocument>();
 
         CreateMap<BicycleDocument, Bicycle>();
 
@@ -61,8 +60,7 @@ public class MigrationMappingProfile : Profile
         // ---------------------------
         // Route
         // ---------------------------
-        CreateMap<Route, RouteDocument>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore());
+        CreateMap<Route, RouteDocument>();
 
         CreateMap<RouteDocument, Route>();
 
