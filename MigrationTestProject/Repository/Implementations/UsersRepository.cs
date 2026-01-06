@@ -14,17 +14,6 @@ namespace MigrationTestProject.Repository.Implementations
         }
         public async Task CreateUsersAsync(UsersNeo4j u)
         {
-            var query = @"
-                MERGE (u:Users { id: $UserId })
-                SET u.username = $Username,
-                    u.hash = $Hash,
-                    u.role = $Role
-                WITH u
-                
-                // Connect to Employee
-                MATCH (e:Employees { employeeId: $EmployeeId })
-                MERGE (u)-[:ASSIGNED_TO_EMPLOYEE]->(e)
-            ";
             // Convert enum to string
             var parameters = new
             {
@@ -34,6 +23,18 @@ namespace MigrationTestProject.Repository.Implementations
                 Role = u.Role.ToString(),  // enum as string
                 EmployeeId = u.EmployeeId
             };
+            var query = @"
+                MERGE (u:Users { id: $UserId })
+                SET u.username = $Username,
+                    u.hash = $Hash,
+                    u.role = $Role
+                WITH u
+                
+                // Connect to Employee
+                MATCH (e:Employees { id: $EmployeeId })
+                MERGE (u)-[:ASSIGNED_TO_EMPLOYEE]->(e)
+            ";
+
             await using var session = _driver.AsyncSession();
             await session.RunAsync(query, parameters);
         }

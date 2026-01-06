@@ -17,7 +17,7 @@ namespace MigrationTestProject.Repository.Implementations
         {
             var query = @"
                 MERGE (r:Routes { id: $Id })
-                SET r.bicycleNumber = $RouteNumber
+                SET r.routeNumber = $RouteNumber
             ";
 
             await using var session = _driver.AsyncSession();
